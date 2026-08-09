@@ -142,49 +142,19 @@ KTB4_Jettie_FE/
 
 로그인과 회원가입은 인증 전 요청이므로 각각 `/api/users/login`, `/api/users/signup`을 Fetch API로 직접 호출합니다.
 
-개발 환경의 Vite는 다음 요청을 로컬 Backend로 프록시합니다.
-
-```text
-/api/*     -> http://localhost:8080/*
-/uploads/* -> http://localhost:8080/uploads/*
-```
-
 ## 인증 처리
 
-- 로그인 응답의 Access Token과 사용자 식별 정보를 localStorage에 저장
-- `AuthProvider`가 localStorage 값을 React Context 상태로 제공
-- 로그인·로그아웃·회원정보 변경 시 사용자 정의 이벤트로 Context 갱신
-- 다른 탭의 localStorage 변경도 `storage` 이벤트로 반영
-- 프로필 이미지 선택 직후 Context 상태를 갱신해 헤더 미리보기와 연동
-- 화면 접근은 `ProtectedRoute`, API 권한은 Backend 응답을 기준으로 처리
-
-## 주요 UI 및 사용자 인터랙션
-
-- 지역 버튼 재선택 시 필터 해제
-- 검색 버튼·Enter로만 해시태그 검색을 확정하고 초기화 버튼 제공
-- 필터·검색·정렬 변경 시 첫 페이지부터 목록 재조회
-- 게시글이 없을 때 빈 목록 문구, 요청 중 로딩 문구, 실패 시 오류 문구 표시
-- 좋아요·댓글·조회수를 카드와 상세 화면에 함께 표시
-- 작성자 ID가 로그인 사용자 ID와 같은 경우에만 수정·삭제 UI 표시
-- 게시글·댓글·회원 삭제 전에 복구 불가 안내 모달 표시
-- 공통 프로필 메뉴와 서비스 헤더 제공
+- 로그인 응답의 Access Token과 사용자 정보를 localStorage에 저장
+- `AuthProvider`를 통해 로그인 상태를 React Context로 관리
+- 로그인·로그아웃·회원정보 변경 시 인증 상태를 갱신
+- 인증이 필요한 화면은 `ProtectedRoute`로 접근 제어
 
 ## 이미지 처리
 
-- 작성 화면은 선택한 `File` 목록과 `URL.createObjectURL()` 미리보기를 관리
-- 상세·목록의 인증 이미지 요청은 Blob으로 받아 Object URL로 렌더링
-- 수정 화면은 기존 서버 이미지와 신규 `File`을 구분해 하나의 순서 목록으로 관리
-- 유지·삭제 이미지 ID, 신규 파일, 통합 순서를 `FormData`에 분리해 전달
-- 이미지 삭제나 컴포넌트 해제 시 `URL.revokeObjectURL()`로 미리보기 URL 정리
-
-## 해시태그 UI 및 검색
-
-- 입력 중 문자열과 실제 검색 조건을 별도 상태로 관리
-- 검색 조건은 `hashtag`, 지역은 `area`, 정렬은 `sort` 쿼리 파라미터로 조합
-- 입력창을 수정하는 동안에는 API를 호출하지 않고 검색 버튼 또는 Enter에서 조회
-- 검색 초기화 시 현재 지역과 정렬은 유지
-- 카드·상세의 태그 클릭 검색은 지역을 해제하고 최신순으로 시작
-- URL의 `hashtag` 쿼리를 읽어 직접 접근 시에도 검색 상태 초기화
+- `URL.createObjectURL()`을 이용해 선택한 이미지의 미리보기 제공
+- 수정 화면에서 기존 서버 이미지와 신규 이미지를 구분해 유지·삭제·추가 및 순서 변경 처리
+- 이미지와 순서 정보를 `FormData`로 Backend에 전달
+- 사용이 끝난 Object URL은 `URL.revokeObjectURL()`로 정리
 
 ## 서비스 화면
 
@@ -193,20 +163,6 @@ KTB4_Jettie_FE/
 ### 게시글 작성 및 상세
 
 ### 회원 기능
-
-## Frontend CI
-
-`.github/workflows/frontend-ci.yml`은 `main` 브랜치의 push와 pull request에서 실행됩니다.
-
-```text
-Checkout
-  -> Node.js 22 설정
-  -> npm ci
-  -> npm run lint
-  -> npm run build
-```
-
-이 workflow는 정적 검사와 빌드 검증만 담당하며 EC2 배포는 수행하지 않습니다. 전체 서비스 배포 workflow와 Docker Compose 설정은 Backend 저장소에서 관리합니다.
 
 ## 배포 구조
 
@@ -222,8 +178,6 @@ Nginx runtime
   -> dist 정적 파일 제공
   -> React Router SPA fallback
 ```
-
-Frontend 컨테이너는 React 정적 파일 제공을 담당합니다. 외부 요청의 `/api/*`, `/uploads/*` reverse proxy와 Frontend·Backend·MySQL 통합 실행은 Backend 저장소의 `deployment` 설정이 담당합니다.
 
 ## 프로젝트 후기
 
