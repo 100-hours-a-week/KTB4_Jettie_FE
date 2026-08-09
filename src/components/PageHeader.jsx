@@ -14,9 +14,9 @@ export function ProfileImage({ src, className = "" }) {
   );
 }
 
-export default function PageHeader({ backTo, onBack, requireLogin = true }) {
+export default function PageHeader({ backTo, onBack }) {
   const navigate = useNavigate();
-  const { isLogin, profileImage, logout: clearAuth } = useAuth();
+  const { authenticated, profileImage, logout: clearAuth } = useAuth();
 
   function goBack() {
     if (onBack) {
@@ -51,7 +51,7 @@ export default function PageHeader({ backTo, onBack, requireLogin = true }) {
           </button>
         )}
         <Link to="/posts" className="home-link"><h1>여행발자국</h1></Link>
-        {(!requireLogin || isLogin) && isLogin && (
+        {authenticated && (
           <div className="profile-menu">
             <button className="user-info-btn header-profile-circle" type="button">
               <ProfileImage

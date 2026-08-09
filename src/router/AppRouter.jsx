@@ -9,6 +9,18 @@ import MyPostPage from "../pages/MyPostPage.jsx";
 import UserUpdatePage from "../pages/UserUpdatePage.jsx";
 import PasswordUpdatePage from "../pages/PasswordUpdatePage.jsx";
 import ProtectedRoute from "../components/ProtectedRoute.jsx";
+import useAuth from "../hooks/useAuth.js";
+
+function RootRedirect() {
+  const { authenticated } = useAuth();
+
+  return (
+    <Navigate
+      to={authenticated ? "/posts" : "/login"}
+      replace
+    />
+  );
+}
 
 function AppRouter() {
   return (
@@ -16,7 +28,7 @@ function AppRouter() {
       <Routes>
         <Route
           path="/"
-          element={<Navigate to="/posts" replace />}
+          element={<RootRedirect />}
         />
 
         <Route path="/login" element={<LoginPage />} />

@@ -1,4 +1,7 @@
-import { clearLoginStorage } from "../utils/auth.js";
+import {
+    clearLoginStorage,
+    getValidAccessToken,
+} from "../utils/auth.js";
 
 const API_BASE_URL = "/api";
 // const API_BASE_URL = "http://localhost:8080";
@@ -8,8 +11,7 @@ export async function apiFetch(url, options = {}) {
         ? url
         : `${API_BASE_URL}${url}`;
 
-    const accessToken =
-        localStorage.getItem("accessToken");
+    const accessToken = getValidAccessToken();
 
     const headers = new Headers(
         options.headers || {}

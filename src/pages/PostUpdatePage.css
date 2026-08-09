@@ -163,9 +163,10 @@ hr {
     border: none;
 }
 
-#content {
+#update-content {
     width: 100%;
     min-height: 80px;
+    padding: 10px;
     box-sizing: border-box;
     background-color: #f4f5f7;
     border: none;

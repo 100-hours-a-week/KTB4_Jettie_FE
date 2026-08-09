@@ -267,7 +267,14 @@ function PostUpdatePage() {
           <div><label htmlFor="update-title">제목*</label></div><hr />
           <div><input id="update-title" value={title} maxLength={26} onChange={(e) => { setTitle(e.target.value); setError(""); }} /></div><hr />
           <div><label htmlFor="update-content">내용*</label></div><hr />
-          <div><textarea id="update-content" value={content} onChange={(e) => { setContent(e.target.value); setError(""); }} /></div><hr />
+          <div>
+            <textarea
+              id="update-content"
+              value={content}
+              onChange={(e) => { setContent(e.target.value); setError(""); }}
+              placeholder="내용을 입력해주세요."
+            />
+          </div><hr />
           <div>
             <span className="area-select-label">지역*</span>
             <div className="area-select">
